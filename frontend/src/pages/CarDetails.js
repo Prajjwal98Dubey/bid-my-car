@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SINGLE_CAR } from '../api'
 import Navbar from '../components/Navbar'
-import { CALENDAR_IMG, COMMENTS_IMG, HASH_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
+import { CALENDAR_IMG, COMMENTS_IMG, DOWN_ARROW_IMG, HASH_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
 const CarDetails = () => {
   const [searchParam] = useSearchParams()
   const[car,setCar] = useState([])
@@ -37,10 +37,10 @@ const CarDetails = () => {
               <div>
                   <img src={car.requiredCar.images[0]} alt="loading" className='w-[954px] h-[445px] rounded-lg' />
               </div>
-              <div className='ml-[20px]'>
+              <div className='ml-[6px]'>
                 {car.requiredCar.images.filter((c,index)=>index!==0).map((c)=>(
                   <div className="m-2">
-                     <img src={c} alt="laoding" className='w-[215px] h-[140px] rounded-lg' />
+                     <img src={c} alt="laoding" className='w-[250px] h-[140px] rounded-lg' />
                   </div>
                 ))}
               </div>
@@ -53,7 +53,7 @@ const CarDetails = () => {
                     <div className='flex '><img src={COMMENTS_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Comments</div></div>
                   </div>
                   <div className=''>
-                     <button className='w-[132px] h-[40px] rounded-lg bg-green-500 flex justify-center items-center text-black text-[16px] font-semibold ml-[10px]'>Place Bid</button>
+                     <button className='w-[132px] h-[40px] rounded-lg bg-green-500/85 flex justify-center items-center text-black text-[16px] font-semibold ml-[10px] hover:bg-green-700/85'>Place Bid</button>
                   </div>
             </div>
             <div className='m-2 ml-[28px]'>
@@ -97,7 +97,6 @@ const CarDetails = () => {
               </table>
             </div>
             <div className='m-2 ml-[28px] mt-[20px] font-Dosis'>
-                  <div className='text-3xl font-semibold'>{car.requiredCar.model} </div>
                   <div className='m-4 w-[850px] border border-collapse flex'>
                       <div className='w-1/2'>
                         <div className='font-semibold m-2'>Current Bid</div>
@@ -109,6 +108,14 @@ const CarDetails = () => {
                             <div className='flex'>Bids <span><img src={HASH_IMG} alt="loading" className='w-[20px] h-[20px] ml-[28px]' /></span><span className='ml-[7px] text-gray-800'>{car.requiredCar.numberOfBids}</span></div>
                       </div>
                   </div>
+            </div>
+            <div className='ml-[47px]'>
+                    <div className='text-2xl font-bold m-6 '>Comments & Bids</div>
+                    <div className=''><input type="text" className='relative w-[898px] h-[47px]  ml-6 border border-gray-400 pl-[10px] mb-[24px] text-md ' placeholder="Add a Comment..." />
+                    </div>
+            </div>
+            <div className='text-center font-light text-2xl'>
+                    COMMENTS
             </div>
            </div>
         

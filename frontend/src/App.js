@@ -2,6 +2,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Main from "./pages/Main";
 import Seller from "./pages/Seller";
 import CarDetails from "./pages/CarDetails";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import MyProfile from "./pages/MyProfile";
 function App() {
   return (
    <>
@@ -22,6 +25,22 @@ const appRouter =  createBrowserRouter([
   {
     path:'/car',
     element:<CarDetails/>
+  },
+  {
+    path:'/register',
+    element:<Register/>
+  },
+  {
+    path:'/login',
+    element:<Login/>
+  },
+  {
+    path:'/my-profile',
+    element:<MyProfile/>
+  },
+  {
+    path:"*",
+    element:<div>Error Page hai ye !!!</div>
   }
 ])
 

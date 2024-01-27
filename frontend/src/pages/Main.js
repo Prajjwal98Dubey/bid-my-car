@@ -27,7 +27,7 @@ const Main = () => {
                 <div className='pl-[50px]'>
                 <div className='flex flex-wrap font-Roboto'>
                     {cars.map((car) => (
-                        <div key={car._id}>
+                        <div key={car._id} className='font-Roboto'>
                         <Link  to={"/car?c_id="+car._id}>
                         <div className='flex justify-center hover:cursor-pointer hover:opacity-90'>
                         <div className='w-[313px] h-[356px] m-[10px] relative'>

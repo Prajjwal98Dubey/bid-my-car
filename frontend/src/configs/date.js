@@ -9,5 +9,6 @@ export const formatDate=(s)=>{
         time = secondHalf.split(":")[0] -12
     }
     
+    return time
     
 }

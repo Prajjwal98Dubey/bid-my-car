@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       fontFamily:{
         Roboto:["Roboto Condensed"," sans-serif"],
-        Dosis:["Dosis","sans-serif"]
+        Dosis:["Dosis","sans-serif"],
+        Noto:["Noto Serif", "serif"]
       }
     },
   },
