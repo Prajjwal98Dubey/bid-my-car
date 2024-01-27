@@ -9,6 +9,7 @@ const ADD_CAR_API = 'http://localhost:5001/api/cars/add-car'
 const Seller = () => {
     const [make, setMake] = useState("")
     const [model, setModel] = useState("")
+    const[plate,setPlate] = useState("")
     const [mileage, setMileage] = useState("")
     const [engine, setEngine] = useState("")
     const [transmission, setTransmission] = useState("")
@@ -54,6 +55,7 @@ const Seller = () => {
             const {data} = await axios.post(ADD_CAR_API, {
                 make: make,
                 model: model,
+                numberplate:plate,
                 mileage: mileage,
                 engine: engine,
                 transmission: transmission,
@@ -87,6 +89,9 @@ const Seller = () => {
                     </div>
                     <div>
                         <input className=' pl-[4px] w-[390px] h-[34px] text-sm border border-black m-[7px]' placeholder="2019 toyota Fortuner" type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className='pl-[4px] w-[390px] h-[34px] text-sm border border-black m-[7px]' placeholder="UP32AA1234" type="text" value={plate} onChange={(e) => setPlate(e.target.value)} />
                     </div>
                     <div>
                         <input className=' pl-[4px] w-[390px] h-[34px] text-sm border border-black m-[7px]' placeholder="27" type="text" value={mileage} onChange={(e) => setMileage(e.target.value)} />

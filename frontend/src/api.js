@@ -1,0 +1,1 @@
+export const SINGLE_CAR = 'http://localhost:5001/api/cars/singlecar/'

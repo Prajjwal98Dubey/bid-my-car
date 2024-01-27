@@ -8,6 +8,10 @@ const carModel = mongoose.Schema({
         type: String,
         required: true
     },
+    numberplate:{
+        type:String,
+        required:true
+    },
     mileage: {
         type: String,
         required: true

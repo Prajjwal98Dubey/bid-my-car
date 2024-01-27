@@ -1,6 +1,5 @@
 
 import { createContext, useState } from "react";
-
 export const carContext = createContext(null)
 export const CarProvider = (props) => {
     const [items, setItems] = useState([])
