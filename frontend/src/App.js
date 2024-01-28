@@ -5,6 +5,7 @@ import CarDetails from "./pages/CarDetails";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import MyProfile from "./pages/MyProfile";
+import EditProfile from "./pages/EditProfile";
 function App() {
   return (
    <>
@@ -36,7 +37,11 @@ const appRouter =  createBrowserRouter([
   },
   {
     path:'/my-profile',
-    element:<MyProfile/>
+    element:<MyProfile/>,
+  },
+  {
+    path:'/edit-profile',
+    element:<EditProfile/>
   },
   {
     path:"*",

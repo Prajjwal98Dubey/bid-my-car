@@ -14,7 +14,7 @@ const MyProfile = () => {
     <div className='font-Roboto'>
     <div className='z-10 sticky top-0'><Navbar/></div>
     <div className='flex justify-center m-10 font-extrabold text-4xl'>Hi.</div>
-    <div className='flex justify-center mt-[3px] font-bold text-2xl text-blue-400'>{JSON.parse(localStorage.getItem("carBidInfo"))} <span onClick={()=>handleUserLogout()}><img className=' w-[30px] h-[30px] flex justify-center items-center cursor-pointer ml-[5px]' src={LOGOUT_ICON_IMG} alt="loading" /></span></div>
+    <div className='flex justify-center mt-[3px] font-bold text-2xl text-blue-400'>{JSON.parse(localStorage.getItem("carBidInfo")).email} <span onClick={()=>handleUserLogout()}><img className=' w-[30px] h-[30px] flex justify-center items-center cursor-pointer ml-[5px]' src={LOGOUT_ICON_IMG} alt="loading" /></span></div>
     <div className='flex justify-around m-5'>
         <div className='bg-gray-800/85 w-[300px] h-[160px] text-white flex justify-center items-center text-2xl font-semibold rounded-lg shadow-xl cursor-pointer hover:bg-gray-800/75'>
            <img src={CAR_ICON_IMG} alt="loading" className='w-[45px] h-[45px] mr-[4px] mb-[5px]' /> Become a Seller

@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        default:"This is Google Account"
     },
     pic: {
         type: String,
