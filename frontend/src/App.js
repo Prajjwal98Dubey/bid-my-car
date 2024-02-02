@@ -6,10 +6,14 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import MyProfile from "./pages/MyProfile";
 import EditProfile from "./pages/EditProfile";
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import WatchList from "./pages/WatchList";
 function App() {
   return (
    <>
    <RouterProvider router={appRouter}/>
+    <ToastContainer/>
    </>
   );
 }
@@ -42,6 +46,10 @@ const appRouter =  createBrowserRouter([
   {
     path:'/edit-profile',
     element:<EditProfile/>
+  },
+  {
+    path:'/watch-list',
+    element:<WatchList/>
   },
   {
     path:"*",

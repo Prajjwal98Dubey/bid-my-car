@@ -17,7 +17,7 @@ const Seller = () => {
     const [interiorColor, setInteriorColor] = useState("")
     const [location, setLocation] = useState("")
     const [distance, setDistance] = useState("")
-    const [seller, setSeller] = useState('')
+    const [seller, setSeller] = useState(localStorage.getItem("carBidInfo") ? JSON.parse(localStorage.getItem("carBidInfo")).email :"")
     const [mainImage, setMainImage] = useState("")
     const [sideImage1, setSideImage1] = useState("")
     const [sideImage2, setSideImage2] = useState("")
@@ -81,6 +81,7 @@ const Seller = () => {
     }
     return (
         <>
+        {console.log(JSON.parse(localStorage.getItem("carBidInfo")).email)}
             <div className='flex justify-center text-xl font-bold text-green-500'>Cars</div>
             <div className='flex justify-center'>
                 <div>
