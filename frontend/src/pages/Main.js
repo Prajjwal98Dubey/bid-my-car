@@ -5,6 +5,8 @@ import { useContext } from 'react'
 import { carContext } from '../contexts/carContext'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import { findDiffDate } from '../helper/timeDifference'
+import { WATCH_IMG } from '../images/image'
 const GET_ALL_CARS = 'http://localhost:5001/api/cars/get-cars'
 const Main = () => {
     const [cars, setCars] = useState([])
@@ -33,9 +35,12 @@ const Main = () => {
                         <div className='w-[313px] h-[356px] m-[10px] relative'>
                             <div className=''>
                                 <img className="w-[313px] h-[205px] rounded-md "src={car.images[0]} alt="loading" />
-                                <span className=' absolute left-[10px] top-[170px] bg-gray-800/85 w-[159px] h-[25px] text-white rounded-md flex justify-around p-[3px]'>
-                                    <span className='text-[13px] font-semibold'> 2 Days</span>
-                                    <span className='text-[13px] font-semibold'>
+                                <span className=' absolute left-[7px] top-[165px] bg-gray-800/85 w-fit h-fit text-white rounded-md flex justify-around p-[3px]'>
+                                    <div className='flex m-[2px] p-[2px]'>
+                                    <span><img src={WATCH_IMG} alt="loading" className='w-[15px] h-[15px] m-[2px]' /></span>
+                                    <span className='text-[13px] font-semibold pl-1'>{findDiffDate(car.time,Date()) ?findDiffDate(car.time,Date()) :<div className='font-bold'>Sold</div> }</span>
+                                    </div>
+                                    <span className='text-[13px] font-semibold text-sm m-[2px] p-[2px]'>
                                         <span className='text-gray-300'>Bid </span><span>₹{car.bidPrice.toLocaleString()}</span>
                                     </span>
                                 </span>

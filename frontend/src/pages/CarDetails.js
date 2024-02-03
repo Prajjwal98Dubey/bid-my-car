@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar'
 import { CALENDAR_IMG, COMMENTS_IMG, DOWN_ARROW_IMG, HASH_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, STAR_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
 import { toast } from 'react-toastify'
 import { config } from '../configs/headersConfig'
+import {findDiffDate} from '../helper/timeDifference'
 const CarDetails = () => {
   const [searchParam] = useSearchParams()
   const [car, setCar] = useState([])
@@ -85,9 +86,9 @@ const CarDetails = () => {
               ))}
             </div>
           </div>
-          <div className='m-4 flex w-[850px] h-[70px] p-4 z-10 sticky top-[60px] bg-white/90'>
+          <div className='m-4 flex w-[950px] h-[70px] p-4 z-10 sticky top-[60px] bg-white/90'>
             <div className='w-[740px] bg-black/85 h-[40px] flex justify-around text-white items-center rounded-lg'>
-              <div className='flex'><img src={WATCH_IMG} alt="loading" className='w-[14px] h-[18px] m-1 ' /><div className='text-gray-400  m-[1px]'>Time Left<span className="text-white font-semibold"> 2 Days</span></div></div>
+              <div className='flex'><img src={WATCH_IMG} alt="loading" className='w-[14px] h-[18px] m-1 ' /><div className='text-gray-400 m-[1px]'>Time Left<span className="text-white font-semibold pl-[5px]">{findDiffDate(car.requiredCar.time,Date())}</span></div></div>
               <div className='flex '><img src={UP_ARROW} alt="loading" className='w-[20px] h-[20px] m-1' /><div className='text-gray-400 mt-[3px]'>High Bid <span className="text-white font-semibold">₹{car.requiredCar.bidPrice.toLocaleString()}</span></div></div>
               <div className='flex '><img src={HASH_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Bids <span className="text-white font-semibold">{car.requiredCar.numberOfBids}</span></div></div>
               <div className='flex '><img src={COMMENTS_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Comments</div></div>
