@@ -1,9 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ADD_MY_COMMENT, ADD_TO_WATCH_LIST, CHECK_CAR_IN_WATCH_LIST, GET_ALL_COMMENT, REMOVE_FROM_WATCH_LIST, SINGLE_CAR } from '../api'
 import Navbar from '../components/Navbar'
-import { CALENDAR_IMG, COMMENTS_IMG, CROSS_ICON_IMG, HASH_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
+import { CALENDAR_IMG, COMMENTS_IMG, CROSS_ICON_IMG, HASH_IMG, RIGHT_ARROW_CIRCLE_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
 import { toast } from 'react-toastify'
 import { config } from '../configs/headersConfig'
 import { findDiffDate } from '../helper/timeDifference'
@@ -18,17 +18,55 @@ const CarDetails = () => {
   const [reply, setReply] = useState("")
   const [commentDesc, setCommentDesc] = useState("")
   const [comment, setComments] = useState([])
+  const [tmp, setTmp] = useState(false)
+  const navigate= useNavigate()
   useEffect(() => {
     const getCar = async () => {
-      const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"),config)
-      const commentData  = await axios.get(GET_ALL_COMMENT + searchParam.get("c_id"),config)
+      const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"), config)
+      const commentData = await axios.get(GET_ALL_COMMENT + searchParam.get("c_id"), config)
       setCar(data)
       setComments(commentData.data)
       setIsLoading(false)
     }
     getCar()
-  }, [searchParam])
+  }, [searchParam, tmp])
+  const handleComment = async () => {
+    if (!localStorage.getItem('carBidInfo')) {
+      navigate('/login')
+      toast.warning("Login to Bid or Comment!!!", {
+        position: 'top-center'
+      })
+      return
+    }
+    if (commentDesc === "") {
+      toast.warning("Add Some comment Amount!!!", {
+        position: 'top-center'
+      })
+      return
+    }
+    const { data } = await axios.post(ADD_MY_COMMENT, {
+      bid: bidMoney,
+      carId: searchParam.get("c_id"),
+      user: JSON.parse(localStorage.getItem("carBidInfo")).email,
+      reply: reply,
+      desc: commentDesc
+    }, config)
+    toast.success('Comment added!!!', {
+      position: 'top-center'
+    })
+    setBidMoney("")
+    setReply("")
+    setCommentDesc("")
+    setTmp(!tmp)
+  }
   const handleApplyBidBtn = async () => {
+    if (!localStorage.getItem('carBidInfo')) {
+      navigate('/login')
+      toast.warning("Login to Bid or Comment!!!", {
+        position: 'top-center'
+      })
+      return
+    }
     if (bidMoney === "") {
       toast.warning("Add Some Bid Amount!!!", {
         position: 'top-center'
@@ -49,7 +87,9 @@ const CarDetails = () => {
     setReply("")
     setCommentDesc("")
     setIsOpen(false)
+    setTmp(!tmp)
   }
+
   const handleWatchList = async () => {
     const { data } = await axios.post(CHECK_CAR_IN_WATCH_LIST, {
       userEmail: JSON.parse(localStorage.getItem("carBidInfo")).email,
@@ -101,7 +141,7 @@ const CarDetails = () => {
             </div>
             <div className='ml-[6px]'>
               {car.requiredCar.images.filter((c, index) => index !== 0).map((c) => (
-                <div className="m-2">
+                <div key={c._id} className="m-2">
                   <img src={c} alt="laoding" className='w-[250px] h-[140px] rounded-lg' />
                 </div>
               ))}
@@ -203,14 +243,14 @@ const CarDetails = () => {
           <div className='ml-[47px]'>
             <div className='text-2xl font-bold m-6 '>Comments & Bids</div>
             <div className='flex'>
-            <div className=''><input type="text" className='relative w-[898px] h-[47px]  ml-6 border border-gray-400 pl-[10px] mb-[24px] text-md ' placeholder="Add a Comment..."  value={commentDesc} onChange={(e)=>setCommentDesc(e.target.value)}/>
-            </div>
-            <span><button className='w-[200px] h-[47px] rounded-r-lg bg-green-500 hover:bg-green-700 cursor-pointer font-semibold' onClick={()=>handleApplyBidBtn()}>Comment & Bid</button></span></div>
+              <div className=''><input type="text" className='relative w-[898px] h-[47px]  ml-6 border border-gray-400 pl-[10px] mb-[24px] text-md ' placeholder="Add a Comment..." value={commentDesc} onChange={(e) => setCommentDesc(e.target.value)} />
+              </div>
+              <span className='flex justify-center pt-[6px] w-[100px] h-[47px] bg-green-500 hover:bg-green-600 hover:cursor-pointer rounded-r-lg' onClick={() => handleComment()}><img src={RIGHT_ARROW_CIRCLE_IMG} alt="loading" className='w-[30px] h-[30px]' /></span></div>
           </div>
           <div className='text-center font-light text-2xl'>
-              {comment.length===0 ? <div>No Comments...</div>:
-              comment.map((c)=><DisplayComments comm={c}/>)
-              }
+            {comment.length === 0 ? <div>No Comments...</div> :
+              comment.map((c) => <DisplayComments key={c._id} comm={c} />)
+            }
           </div>
         </div>
 
