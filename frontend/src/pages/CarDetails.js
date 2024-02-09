@@ -15,6 +15,8 @@ const CarDetails = () => {
   const [watchStatus, setWatchStatus] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [bidMoney, setBidMoney] = useState("")
+  const[numberOfBids,setNumberOfBids]=useState(0)
+  const[maxiBidPrice,setMaxiBidPrice] =useState("0")
   const [reply, setReply] = useState("")
   const [commentDesc, setCommentDesc] = useState("")
   const [comment, setComments] = useState([])
@@ -24,6 +26,28 @@ const CarDetails = () => {
     const getCar = async () => {
       const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"), config)
       const commentData = await axios.get(GET_ALL_COMMENT + searchParam.get("c_id"), config)
+      const countNumberOfBids=()=>{
+        let count=0
+        for(let i=0;i<commentData.data.length;i++){
+          if(commentData.data[i].bid !== ""){
+              count+=1
+          }
+        }
+        setNumberOfBids(count)
+        return
+      }
+      const calculateHighestBid=()=>{
+        let maxi="0";
+        for(let i=0;i<commentData.data.length;i++){
+            if(commentData.data[i].bid!=="" && parseInt(commentData.data[i].bid) > parseInt(maxi)) maxi=commentData.data[i].bid
+                
+        }
+        console.log("-----------------------",typeof(maxi))
+        setMaxiBidPrice(maxi)
+        return
+      }
+      countNumberOfBids()
+      calculateHighestBid()
       setCar(data)
       setComments(commentData.data)
       setIsLoading(false)
@@ -141,7 +165,7 @@ const CarDetails = () => {
             </div>
             <div className='ml-[6px]'>
               {car.requiredCar.images.filter((c, index) => index !== 0).map((c) => (
-                <div key={c._id} className="m-2">
+                <div className="m-2">
                   <img src={c} alt="laoding" className='w-[250px] h-[140px] rounded-lg' />
                 </div>
               ))}
@@ -150,8 +174,8 @@ const CarDetails = () => {
           <div className='m-4 flex w-[950px] h-[70px] p-4 z-10 sticky top-[60px] bg-white/90'>
             <div className=' relative w-[740px] bg-black/85 h-[40px] flex justify-around text-white items-center rounded-lg'>
               <div className='flex'><img src={WATCH_IMG} alt="loading" className='w-[14px] h-[18px] m-1 ' /><div className='text-gray-400 m-[1px]'>Time Left<span className="text-white font-semibold pl-[5px]">{findDiffDate(car.requiredCar.time, Date())}</span></div></div>
-              <div className='flex '><img src={UP_ARROW} alt="loading" className='w-[20px] h-[20px] m-1' /><div className='text-gray-400 mt-[3px]'>High Bid <span className="text-white font-semibold">₹{car.requiredCar.bidPrice.toLocaleString()}</span></div></div>
-              <div className='flex '><img src={HASH_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Bids <span className="text-white font-semibold">{car.requiredCar.numberOfBids}</span></div></div>
+              <div className='flex '><img src={UP_ARROW} alt="loading" className='w-[20px] h-[20px] m-1' /><div className='text-gray-400 mt-[3px]'>High Bid <span className="text-white font-semibold">₹{maxiBidPrice.toLocaleString()}</span></div></div>
+              <div className='flex '><img src={HASH_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Bids <span className="text-white font-semibold">{numberOfBids}</span></div></div>
               <div className='flex '><img src={COMMENTS_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Comments</div></div>
             </div>
             <div className=''>
@@ -248,7 +272,7 @@ const CarDetails = () => {
               <span className='flex justify-center pt-[6px] w-[100px] h-[47px] bg-green-500 hover:bg-green-600 hover:cursor-pointer rounded-r-lg' onClick={() => handleComment()}><img src={RIGHT_ARROW_CIRCLE_IMG} alt="loading" className='w-[30px] h-[30px]' /></span></div>
           </div>
           <div className='text-center font-light text-2xl'>
-            {comment.length === 0 ? <div>No Comments...</div> :
+            {comment.length === 0 ? <div>Be the first to Comment...</div> :
               comment.map((c) => <DisplayComments key={c._id} comm={c} />)
             }
           </div>
