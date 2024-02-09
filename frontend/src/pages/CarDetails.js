@@ -1,25 +1,55 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ADD_TO_WATCH_LIST, CHECK_CAR_IN_WATCH_LIST, REMOVE_FROM_WATCH_LIST, SINGLE_CAR } from '../api'
+import { ADD_MY_COMMENT, ADD_TO_WATCH_LIST, CHECK_CAR_IN_WATCH_LIST, GET_ALL_COMMENT, REMOVE_FROM_WATCH_LIST, SINGLE_CAR } from '../api'
 import Navbar from '../components/Navbar'
-import { CALENDAR_IMG, COMMENTS_IMG, DOWN_ARROW_IMG, HASH_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, STAR_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
+import { CALENDAR_IMG, COMMENTS_IMG, CROSS_ICON_IMG, HASH_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
 import { toast } from 'react-toastify'
 import { config } from '../configs/headersConfig'
-import {findDiffDate} from '../helper/timeDifference'
+import { findDiffDate } from '../helper/timeDifference'
+import DisplayComments from './DisplayComments'
 const CarDetails = () => {
   const [searchParam] = useSearchParams()
   const [car, setCar] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [watchStatus, setWatchStatus] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
+  const [bidMoney, setBidMoney] = useState("")
+  const [reply, setReply] = useState("")
+  const [commentDesc, setCommentDesc] = useState("")
+  const [comment, setComments] = useState([])
   useEffect(() => {
     const getCar = async () => {
-      const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"))
+      const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"),config)
+      const commentData  = await axios.get(GET_ALL_COMMENT + searchParam.get("c_id"),config)
       setCar(data)
+      setComments(commentData.data)
       setIsLoading(false)
     }
     getCar()
   }, [searchParam])
+  const handleApplyBidBtn = async () => {
+    if (bidMoney === "") {
+      toast.warning("Add Some Bid Amount!!!", {
+        position: 'top-center'
+      })
+      return
+    }
+    const { data } = await axios.post(ADD_MY_COMMENT, {
+      bid: bidMoney,
+      carId: searchParam.get("c_id"),
+      user: JSON.parse(localStorage.getItem("carBidInfo")).email,
+      reply: reply,
+      desc: commentDesc
+    }, config)
+    toast.success('bid added!!!', {
+      position: 'top-center'
+    })
+    setBidMoney("")
+    setReply("")
+    setCommentDesc("")
+    setIsOpen(false)
+  }
   const handleWatchList = async () => {
     const { data } = await axios.post(CHECK_CAR_IN_WATCH_LIST, {
       userEmail: JSON.parse(localStorage.getItem("carBidInfo")).email,
@@ -40,11 +70,6 @@ const CarDetails = () => {
         position: 'top-center'
       })
     }
-    // let tmp = watchStatus ? await axios.post(ADD_TO_WATCH_LIST,{
-    //   userEmail:JSON.parse(localStorage.getItem("carBidInfo")).email,
-    //   carId:searchParam.get("c_id")
-    // },config) : await axios.delete(REMOVE_FROM_WATCH_LIST + '?email=' + JSON.parse(localStorage.getItem('carBidInfo')).email + '&carId=' + searchParam.get("c_id"),config)
-    // watchStatus ? toast.success("Car added ",{position:'top-center'}) : toast.error("car removed",{position:'top-center'})
   }
   return (
     <>
@@ -69,10 +94,6 @@ const CarDetails = () => {
                 <span className='m-1'>Share</span>
               </button>
             </div>
-            {/* <div className='m-4 w-[300px] flex justify-evenly items-center '>
-                 <div><button className='w-[97px] h-[40px] bg-gray-200 rounded-lg hover:bg-gray-300'> <span><img src={WATCH_IMG} alt="loading" className='w-[15px] h-[15px]' /></span> Watch</button></div>
-                 <div><button className='w-[97px] h-[40px] bg-gray-200 rounded-lg hover:bg-gray-300'>Share</button></div>
-              </div> */}
           </div>
           <div className='m-4 flex'>
             <div>
@@ -87,14 +108,43 @@ const CarDetails = () => {
             </div>
           </div>
           <div className='m-4 flex w-[950px] h-[70px] p-4 z-10 sticky top-[60px] bg-white/90'>
-            <div className='w-[740px] bg-black/85 h-[40px] flex justify-around text-white items-center rounded-lg'>
-              <div className='flex'><img src={WATCH_IMG} alt="loading" className='w-[14px] h-[18px] m-1 ' /><div className='text-gray-400 m-[1px]'>Time Left<span className="text-white font-semibold pl-[5px]">{findDiffDate(car.requiredCar.time,Date())}</span></div></div>
+            <div className=' relative w-[740px] bg-black/85 h-[40px] flex justify-around text-white items-center rounded-lg'>
+              <div className='flex'><img src={WATCH_IMG} alt="loading" className='w-[14px] h-[18px] m-1 ' /><div className='text-gray-400 m-[1px]'>Time Left<span className="text-white font-semibold pl-[5px]">{findDiffDate(car.requiredCar.time, Date())}</span></div></div>
               <div className='flex '><img src={UP_ARROW} alt="loading" className='w-[20px] h-[20px] m-1' /><div className='text-gray-400 mt-[3px]'>High Bid <span className="text-white font-semibold">₹{car.requiredCar.bidPrice.toLocaleString()}</span></div></div>
               <div className='flex '><img src={HASH_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Bids <span className="text-white font-semibold">{car.requiredCar.numberOfBids}</span></div></div>
               <div className='flex '><img src={COMMENTS_IMG} alt="loading" className='w-[20px] h-[20px] m-1' /><div className=' text-gray-400 mt-[3px]'>Comments</div></div>
             </div>
             <div className=''>
-              <button className='w-[132px] h-[40px] rounded-lg bg-green-500/85 flex justify-center items-center text-black text-[16px] font-semibold ml-[10px] hover:bg-green-700/85'>Place Bid</button>
+              <button className='w-[132px] h-[40px] rounded-lg bg-green-500/85 flex justify-center items-center text-black text-[16px] font-semibold ml-[10px] hover:bg-green-700/85 hover:cursor-pointer' onClick={() => {
+                setIsOpen(!isOpen)
+              }}>Place Bid</button>
+              {isOpen &&
+                <div className='w-[550px] h-[350px] bg-black rounded-lg border-collapse absolute left-[210px] top-2 z-10 shadow-xl shadow-black'>
+                  <div className='relative'>
+                    <img src={CROSS_ICON_IMG} alt="loading" className='absolute right-2 top-2 cursor-pointer p-1' onClick={() => setIsOpen(false)} />
+                  </div>
+                  <div className='p-4 text-white'>
+                    <div className='p-2 text-xl font-Roboto font-semibold text-white flex justify-center'>{car.requiredCar.make}</div>
+                    <div className='p-2 text-xl font-Roboto font-semibold text-white flex justify-center'>{car.requiredCar.model}</div>
+                    <div className='p-2 flex justify-between align-baseline'>
+                      <div>Base Price -</div>
+                      <div className='text-2xl font-bold'>₹{(car.requiredCar.basePrice).toLocaleString()}</div>
+                    </div>
+                    <div className='p-2 flex justify-between align-baseline'>
+                      <div>Current Bid Price -</div>
+                      <div className='text-2xl font-bold'>₹{(car.requiredCar.bidPrice).toLocaleString()}</div>
+                    </div>
+                    <div className='p-2 '>*bid should be greater than current bid price</div>
+                    <div className='p-2 text-black flex justify-center'>
+                      <input type="number" value={bidMoney} onChange={(e) => setBidMoney(e.target.value)} className=' w-[250px] h-[35px] border-collapse border border-gray-400 p-2 text-xl rounded-lg' />
+                    </div>
+                    <div className='p-2 flex justify-center'>
+                      <button className='w-[140px] h-[35px] bg-purple-500 hover:cursor-pointer hover:bg-purple-700 rounded-lg font-semibold' onClick={() => handleApplyBidBtn()}>Apply Bid</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
             </div>
           </div>
           <div className='m-2 ml-[28px]'>
@@ -152,11 +202,15 @@ const CarDetails = () => {
           </div>
           <div className='ml-[47px]'>
             <div className='text-2xl font-bold m-6 '>Comments & Bids</div>
-            <div className=''><input type="text" className='relative w-[898px] h-[47px]  ml-6 border border-gray-400 pl-[10px] mb-[24px] text-md ' placeholder="Add a Comment..." />
+            <div className='flex'>
+            <div className=''><input type="text" className='relative w-[898px] h-[47px]  ml-6 border border-gray-400 pl-[10px] mb-[24px] text-md ' placeholder="Add a Comment..."  value={commentDesc} onChange={(e)=>setCommentDesc(e.target.value)}/>
             </div>
+            <span><button className='w-[200px] h-[47px] rounded-r-lg bg-green-500 hover:bg-green-700 cursor-pointer font-semibold' onClick={()=>handleApplyBidBtn()}>Comment & Bid</button></span></div>
           </div>
           <div className='text-center font-light text-2xl'>
-            COMMENTS
+              {comment.length===0 ? <div>No Comments...</div>:
+              comment.map((c)=><DisplayComments comm={c}/>)
+              }
           </div>
         </div>
 

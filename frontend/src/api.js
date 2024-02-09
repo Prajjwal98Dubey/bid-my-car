@@ -5,3 +5,5 @@ export const ADD_TO_WATCH_LIST= 'http://localhost:5001/api/watch/add-to-watch-li
 export const REMOVE_FROM_WATCH_LIST ='http://localhost:5001/api/watch/remove-from-watch-list'
 export const CHECK_CAR_IN_WATCH_LIST='http://localhost:5001/api/watch/check-car-watch-list'
 export const GET_MY_WATCH_LIST_CARS = 'http://localhost:5001/api/watch/get-my-watch-list-cars'
+export const ADD_MY_COMMENT='http://localhost:5001/api/comment/add-comment'
+export const GET_ALL_COMMENT='http://localhost:5001/api/comment/get-comment?carId='
