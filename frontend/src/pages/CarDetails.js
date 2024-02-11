@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ADD_MY_COMMENT, ADD_TO_WATCH_LIST, CHECK_CAR_IN_WATCH_LIST, GET_ALL_COMMENT, REMOVE_FROM_WATCH_LIST, SINGLE_CAR } from '../api'
+import { ADD_MY_COMMENT, ADD_TO_WATCH_LIST, CHECK_CAR_IN_WATCH_LIST, GET_ALL_COMMENT, GET_MY_WATCH_LIST_CARS, REMOVE_FROM_WATCH_LIST, SINGLE_CAR } from '../api'
 import Navbar from '../components/Navbar'
 import { CALENDAR_IMG, COMMENTS_IMG, CROSS_ICON_IMG, HASH_IMG, RIGHT_ARROW_CIRCLE_IMG, SHARE_ICON_IMG, STAR_BLACK_ICON_IMG, UP_ARROW, WATCH_IMG } from '../images/image'
 import { toast } from 'react-toastify'
@@ -13,36 +13,44 @@ const CarDetails = () => {
   const [car, setCar] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [watchStatus, setWatchStatus] = useState(true)
+  const[inWatchList,setInWatchList] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [bidMoney, setBidMoney] = useState("")
-  const[numberOfBids,setNumberOfBids]=useState(0)
-  const[maxiBidPrice,setMaxiBidPrice] =useState("0")
+  const [numberOfBids, setNumberOfBids] = useState(0)
+  const [maxiBidPrice, setMaxiBidPrice] = useState("0")
   const [reply, setReply] = useState("")
   const [commentDesc, setCommentDesc] = useState("")
   const [comment, setComments] = useState([])
   const [tmp, setTmp] = useState(false)
-  const navigate= useNavigate()
+  const navigate = useNavigate()
   useEffect(() => {
     const getCar = async () => {
       const { data } = await axios.get(SINGLE_CAR + searchParam.get("c_id"), config)
       const commentData = await axios.get(GET_ALL_COMMENT + searchParam.get("c_id"), config)
-      const countNumberOfBids=()=>{
-        let count=0
-        for(let i=0;i<commentData.data.length;i++){
-          if(commentData.data[i].bid !== ""){
-              count+=1
+      const watchList  = await axios.get(GET_MY_WATCH_LIST_CARS+"?email="+JSON.parse(localStorage.getItem("carBidInfo")).email,config)
+      const filteredData = watchList.data.filter((w)=>w.carId===searchParam.get("c_id"))
+      if (filteredData.length===0){
+        setInWatchList(false)
+      }
+      else{
+        setInWatchList(true)
+      }
+      const countNumberOfBids = () => {
+        let count = 0
+        for (let i = 0; i < commentData.data.length; i++) {
+          if (commentData.data[i].bid !== "") {
+            count += 1
           }
         }
         setNumberOfBids(count)
         return
       }
-      const calculateHighestBid=()=>{
-        let maxi="0";
-        for(let i=0;i<commentData.data.length;i++){
-            if(commentData.data[i].bid!=="" && parseInt(commentData.data[i].bid) > parseInt(maxi)) maxi=commentData.data[i].bid
-                
+      const calculateHighestBid = () => {
+        let maxi = "0";
+        for (let i = 0; i < commentData.data.length; i++) {
+          if (commentData.data[i].bid !== "" && parseInt(commentData.data[i].bid) > parseInt(maxi)) maxi = commentData.data[i].bid
+
         }
-        console.log("-----------------------",typeof(maxi))
         setMaxiBidPrice(maxi)
         return
       }
@@ -134,9 +142,11 @@ const CarDetails = () => {
         position: 'top-center'
       })
     }
+    setTmp(!tmp)
   }
   return (
     <>
+    {console.log(inWatchList)}
       <div className=' z-10 sticky top-0'>
         <Navbar />
       </div>
@@ -151,11 +161,16 @@ const CarDetails = () => {
               <button className='w-[97px] h-[40px] bg-gray-200 hover:bg-gray-300 flex justify-center items-center cursor-pointer rounded-lg font-semibold m-1' onClick={() => {
                 setWatchStatus(!watchStatus)
                 handleWatchList()
-              }}><span className='m-1'><img src={STAR_BLACK_ICON_IMG} alt="loading" className='w-[15px] h-[15px]' /></span>
-                <span className='m-1'>Watch</span>
+              }}><span className='m-1'><img src={STAR_BLACK_ICON_IMG} alt="loading" className='w-[25px] h-[15px]' /></span>
+                <span className='m-1'>{inWatchList ? 'Watching' :'Watch'}</span>
               </button>
               <button className='w-[97px] h-[40px] bg-gray-200 hover:bg-gray-300 flex justify-center items-center cursor-pointer rounded-lg font-semibold m-1'><span className='m-1'><img src={SHARE_ICON_IMG} alt="loading" className='w-[15px] h-[15px]' /></span>
-                <span className='m-1'>Share</span>
+                <span className='m-1' onClick={() => {
+                  navigator.clipboard.writeText(`http://localhost:3000/car?c_id=${car.requiredCar._id}`)
+                  toast.success("Ready to share", {
+                    position: 'top-center'
+                  })
+                }}>Share</span>
               </button>
             </div>
           </div>
