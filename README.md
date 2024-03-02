@@ -3,11 +3,11 @@
 <h2>Features:</h2>
 <ul>
   <li>Created a car catalog that contains detailed information about different cars.</li></li>
-  <li>•Implemented user authentication and utilized Firebase storage to store the images.
+  <li>Implemented user authentication and utilized Firebase storage to store the images.
 </li>
-  <li>•Added the feature that allows users to add their cars for bidding.
+  <li>Added the feature that allows users to add their cars for bidding.
 </li>
-  <li>•Implemented a real-time bidding feature.
+  <li>Implemented a real-time bidding feature.
 </li>
 </ul>
 <h2>Tech Stack</h2>
